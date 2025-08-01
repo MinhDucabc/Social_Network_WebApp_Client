@@ -8,7 +8,6 @@ export default function QuestionCard({questionContent, handleToggleFollow, handl
   const [toggleCommentSection, setToggleCommentSection] = useState(false)
   const { id, type, title, description, tags, user, group, date} = questionContent;
   const questionInputField = {title, description, tags}
-  debugger
   return (
     <>
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-4 mt-6">

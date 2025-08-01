@@ -6,8 +6,11 @@ import { fetchFollowing } from "../../slices/profile/following-slice";
 import { fetchUnfollowedUsers } from "../../slices/profile/user-suggestion-slice";
 import { fetchUserProfile } from "../../slices/profile/profile-slice";
 import api from "../../api/apiBase";
+import { resetFollowing } from "../../slices/profile/following-slice";
+import { resetUserSuggestions } from "../../slices/profile/user-suggestion-slice";
 
 export default function UserList({ user }) {
+  debugger
   const dispatch = useDispatch();
   const [pendingFollowChange, setPendingFollowChange] = useState(false);
   const [followedUserIds, setFollowedUserIds] = useState([]);
@@ -17,15 +20,32 @@ export default function UserList({ user }) {
   const followingList = useSelector((state) => state.following.list);
   const unfollowedList = useSelector((state) => state.userSuggestions.users);
 
+  // Reset states when user is null
   useEffect(() => {
-    if (user?.following) {
+    if (!user) {
+      setFollowedUserIds([]);
+      setPendingFollowChange(false);
+      dispatch(resetFollowing());
+      dispatch(resetUserSuggestions());
+      return;
+    }
+
+    // Only fetch if we have a valid user
+    if (user.following) {
       setFollowedUserIds(user.following);
       dispatch(fetchFollowing(user.following));
     }
-    if (user?.id) {
+    if (user.id) {
       dispatch(fetchUnfollowedUsers(user.id));
     }
+
+    // Cleanup function
+    return () => {
+      setFollowedUserIds([]);
+      setPendingFollowChange(false);
+    };
   }, [user, dispatch]);
+
 
   const handleAddFollower = (followedIds, currentUserId) => {
     api

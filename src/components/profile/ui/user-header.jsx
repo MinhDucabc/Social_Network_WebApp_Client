@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function UserHeader({
   user,
@@ -12,34 +12,73 @@ export default function UserHeader({
   updatedError,
 }) {
   const { token } = useSelector((state) => state.auth);
-  let isOwner = false;
   const [error, setError] = useState(updatedError);
+  const [isOwner, setIsOwner] = useState(false);
 
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      isOwner = decoded.authId === user.authId;
-    } catch (err) {
-      console.error("Token không hợp lệ");
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsOwner(decoded.authId === user.authId);
+      } catch (err) {
+        console.error("Token không hợp lệ");
+      }
     }
-  }
+  }, [token, user.authId]);
 
   return (
     <div className="border-b pb-4 space-y-4">
       <div className="flex justify-between items-start">
         <div className="flex space-x-4">
-          <img
-            src={form.avatar || "../../../assets/default-avatar.png"}
-            alt="Avatar"
-            className="w-20 h-20 rounded-full object-cover"
-          />
+          {/* Avatar */}
+          <div className="relative">
+            {isEditing ? (
+              <label>
+                <img
+                  src={form.avatar || "../../../assets/default-avatar.png"}
+                  alt="Avatar"
+                  className="w-20 h-20 rounded-full object-cover cursor-pointer hover:opacity-75"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setForm((prev) => ({ ...prev, avatar: reader.result }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <img
+                src={form.avatar || "../../../assets/default-avatar.png"}
+                alt="Avatar"
+                className="w-20 h-20 rounded-full object-cover"
+              />
+            )}
+          </div>
+
+          {/* Info */}
           <div>
             {isEditing ? (
-              <input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="text-xl font-bold border-b"
-              />
+              <>
+                <input
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm({ ...form, name: e.target.value })
+                  }
+                  className="text-xl font-bold border-b outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Nhấn vào ảnh để thay đổi
+                </p>
+              </>
             ) : (
               <>
                 <h2 className="text-xl font-bold">{form.name}</h2>
@@ -59,11 +98,15 @@ export default function UserHeader({
           </div>
         </div>
 
+        {/* Nút chỉnh sửa */}
         {isOwner && (
           <div className="flex space-x-2">
             {!isEditing ? (
               <button
-                onClick={() => {setIsEditing(true), setError(null)}}
+                onClick={() => {
+                  setIsEditing(true);
+                  setError(null);
+                }}
                 className="text-blue-600"
               >
                 Chỉnh sửa

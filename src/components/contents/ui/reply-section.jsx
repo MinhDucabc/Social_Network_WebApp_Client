@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchRepliesByReplyIds } from "../../../slices/contents/replies-slice.js";
 import ReplyItem from "./reply-item.jsx";
 import { addReply } from "../../../slices/contents/replies-slice.js";
+import { useNavigate } from "react-router-dom";
 
 export default function ReplySection({ questionId, parentId, replies }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.profile);
   const repliesData = useSelector((state) => state.replies.data);
+
+  const navigate = useNavigate();
 
   const [replyText, setReplyText] = useState("");
   const [isReplyingTo, setIsReplyingTo] = useState(null);
@@ -20,6 +23,9 @@ export default function ReplySection({ questionId, parentId, replies }) {
   };
 
   const handleAddReply = () => {
+    if (!user) {
+      return navigate("/login");
+    }
     if (!replyText.trim()) return;
     dispatch(
       addReply({

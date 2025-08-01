@@ -2,20 +2,46 @@ import { fetchSavedContents } from "../../../slices/profile/user-saved-content-s
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import {jwtDecode} from "jwt-decode";
+import { useState } from "react";
 
-export default function SavedContentSection({ contents }) {
+export default function SavedContentSection({ contents, authId }) {
   const dispatch = useDispatch();
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const token = localStorage.getItem("token");
+  // Decode token to get authId
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const authid = decoded.authId;
+        setCurrentUser(authid);
+        dispatch(fetchUserProfile(authid));
+      } catch (err) {
+        console.error("Token decode failed:", err);
+      }
+    }
+  }, [token, dispatch]);
 
   const { savedContents, loading, error } = useSelector(
     (state) => state.userSavedContent
   );
+  const isAuthorized = currentUser === authId;
 
   useEffect(() => {
     if (contents?.length > 0) {
-      debugger;
       dispatch(fetchSavedContents(contents));
     }
   }, [contents]);
+
+  if (!currentUser || !isAuthorized) {
+    return (
+      <div className="text-red-500 py-4">
+        Bạn không có quyền xem nội dung đã lưu của người dùng này.
+      </div>
+    );
+  }
 
   return loading ? (
     <div className="text-gray-500 py-4">Đang tải nội dung...</div>

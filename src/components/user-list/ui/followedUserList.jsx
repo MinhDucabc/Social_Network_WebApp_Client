@@ -12,9 +12,9 @@ export default function FollowedUserList({ users, onToggleFollow }) {
           key={user.id}
           className="flex items-center justify-between border-b pb-2 hover:bg-gray-100"
         >
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3" onClick={() => window.location.href = `/profile/${user.authId}`}>
             <img
-              src={user.avatar}
+              src={user.avatar || '../assets/default-avatar.png'}
               alt="avatar"
               className="w-10 h-10 rounded-full"
             />

@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProfile, updateUserProfile } from "../../slices/profile/profile-slice";
+import { fetchUserProfile, updateUserProfile, clearProfile } from "../../slices/profile/profile-slice";
 import { useEffect, useState } from "react";
 import UserHeader from "./ui/user-header";
 import UserIntro from "./ui/user-intro";
 import FollowSection from "./ui/follow-section";
 import ContentSection from "./ui/content-section";
 import SavedContentSection from "./ui/saved-content-section";
+import { resetFollowing } from "../../slices/profile/following-slice";
+import { resetUserSuggestions } from "../../slices/profile/user-suggestion-slice";
 
 export default function Profile({ authId }) {
   const dispatch = useDispatch();
@@ -24,7 +26,16 @@ export default function Profile({ authId }) {
 
   useEffect(() => {
     if (!authId) return;
+    
+    // Fetch user profile when component mounts
     dispatch(fetchUserProfile(authId));
+
+    // Cleanup function to reset profile state when component unmounts
+    return () => {
+      dispatch(clearProfile());
+      dispatch(resetFollowing());
+      dispatch(resetUserSuggestions());
+    };
   }, [dispatch, authId]);
 
   useEffect(() => {
@@ -84,7 +95,7 @@ export default function Profile({ authId }) {
       )}
       {activeTab === "follow" && <FollowSection user={user} />}
       {activeTab === "content" && <ContentSection contents={user.contents} />}
-      {activeTab === "saved" && <SavedContentSection contents={user.savedContents} />}
+      {activeTab === "saved" && <SavedContentSection contents={user.savedContents} authId={authId}  />}
     </div>
   );
 }

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchTags } from "../../../slices/contents/tags-slice.js";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../../../../firebase-config.js";
 
 export default function CreatePostForm({ user, group, onSubmit, onClose }) {
   const tags = useSelector((state) => state.tags.items);
@@ -19,17 +17,15 @@ export default function CreatePostForm({ user, group, onSubmit, onClose }) {
     dispatch(fetchTags());
   }, []);
 
-  const handleUploadImage = async (file) => {
-    try {
-      const imageRef = ref(storage, `images/${Date.now()}_${file.name}`);
-      const snapshot = await uploadBytes(imageRef, file);
-      const downloadURL = await getDownloadURL(imageRef);
-      console.log("✅ Upload thành công:", downloadURL);
-      return downloadURL;
-    } catch (error) {
-      console.error("❌ Upload lỗi:", error);
-    }
+  const handleConvertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // đọc file và chuyển sang base64
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
   };
+
 
   const [errors, setErrors] = useState({
     content: "",
@@ -56,30 +52,31 @@ export default function CreatePostForm({ user, group, onSubmit, onClose }) {
 
   const handlePost = async () => {
     if (!validatePost()) return;
-
-    // let uploadedImageUrl = null;
-    // if (image) {
-    //   try {
-    //     uploadedImageUrl = await handleUploadImage(image);
-    //   } catch (error) {
-    //     console.error("Lỗi khi upload ảnh:", error);
-    //     return;
-    //   }
-    // }
-
+  
+    let base64Image = null;
+    if (image) {
+      try {
+        base64Image = await handleConvertToBase64(image);
+      } catch (error) {
+        console.error("❌ Lỗi khi convert ảnh:", error);
+        return;
+      }
+    }
+  
     onSubmit?.({
       userid: user?.id,
       groupid: group?.id,
       title: title.trim(),
       content: content.trim(),
       tags: tagsSelected,
-      image: image ? uploadedImageUrl : null,
+      image: base64Image || null, // gửi ảnh base64
     });
-
+  
     setTitle("");
     setContent("");
     setTagsSelected([]);
     setImage(null);
+    setPreviewUrl("");
     onClose?.();
   };
 
@@ -148,13 +145,14 @@ export default function CreatePostForm({ user, group, onSubmit, onClose }) {
           type="file"
           id="imageUpload"
           accept="image/*"
-          onChange={async (e) => {
+          onChange={(e) => {
             const file = e.target.files[0];
-            setImage(file);
             if (file) {
-              const imageUrl = await handleUploadImage(file)
-              setPreviewUrl(imageUrl);
+              setImage(file);
+              const localPreview = URL.createObjectURL(file);
+              setPreviewUrl(localPreview);
             } else {
+              setImage(null);
               setPreviewUrl("");
             }
           }}

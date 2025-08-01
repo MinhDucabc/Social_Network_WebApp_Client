@@ -14,9 +14,9 @@ export default function SuggestUsers({ currentUserId, users = [], onToggleFollow
           key={user.id}
           className="p-3 border-b space-y-2 hover:bg-gray-200"
         >
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3" onClick={() => window.location.href = `/profile/${user.authId}`}>
             <img
-              src={user.avatar}
+              src={user.avatar || '../assets/default-avatar.png'}
               className="w-10 h-10 rounded-full"
               alt={user.name}
             />

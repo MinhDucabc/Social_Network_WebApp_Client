@@ -8,7 +8,6 @@ export default function PostCard({postContent, handleToggleFollow, handleToggleV
   const [toggleCommentSection, setToggleCommentSection] = useState(false)
   const { id, type, title, content, image, tags, date, user, group } = postContent;
   const postInputField = {title, content, image, tags}
-  debugger
   return (
     <>
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-4 mt-6">

@@ -22,7 +22,13 @@ const followingSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    resetFollowing: (state) => {
+      state.list = [];
+      state.loading = false;
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFollowing.pending, (state) => {
@@ -39,4 +45,5 @@ const followingSlice = createSlice({
   },
 });
 
+export const { resetFollowing } = followingSlice.actions;
 export default followingSlice.reducer;

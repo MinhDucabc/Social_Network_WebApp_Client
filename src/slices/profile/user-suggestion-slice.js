@@ -21,7 +21,13 @@ const userSuggestionsSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    resetUserSuggestions: (state) => {
+      state.users = [];
+      state.loading = false;
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUnfollowedUsers.pending, (state) => {
@@ -39,4 +45,5 @@ const userSuggestionsSlice = createSlice({
   },
 });
 
+export const { resetUserSuggestions } = userSuggestionsSlice.actions;
 export default userSuggestionsSlice.reducer;

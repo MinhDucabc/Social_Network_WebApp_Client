@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditPostForm from "../edit-delete/edit-post-form";
 import EditQuestionForm from "../edit-delete/edit-question-form";
 import WarningDelete from "../edit-delete/delete-warning-form";
+
 
 export default function Header({
   id,
@@ -22,16 +23,38 @@ export default function Header({
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
+
+
   return (
     <>
       <div className="flex flex-row items-center justify-between space-x-4">
         <div className="flex flex-row items-center space-x-3">
-          <img
-            src={user?.avatar || "../../../assets/default-avatar.png"}
-            alt="avatar"
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
+          <div
+            onClick={() => {
+              if (user?.id) {
+                if (user?.authId) {
+                  window.location.href = `/profile/${user.authId}`;
+                }
+              }
+            }}
+            className="cursor-pointer"
+          >
+            <img
+              src={user?.avatar || "../../../assets/default-avatar.png"}
+              alt="avatar"
+              className="w-10 h-10 rounded-full"
+            />
+          </div>
+          <div
+            onClick={() => {
+              if (user?.id) {
+                if (user?.authId) {
+                  window.location.href = `/profile/${user.authId}`;
+                }
+              }
+            }}
+            className="cursor-pointer"
+          >
             <div className="flex items-center space-x-2">
               <p className="font-semibold text-gray-800">{user?.name}</p>
               {group && (

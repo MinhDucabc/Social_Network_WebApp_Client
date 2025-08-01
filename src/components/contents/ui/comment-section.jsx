@@ -3,6 +3,7 @@ import ReplyItem from "./reply-item.jsx";
 import { useSelector } from "react-redux";
 import { addComment } from "../../../slices/contents/comments-slice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function CommentSection({ postid, comments }) {
   
@@ -11,7 +12,12 @@ export default function CommentSection({ postid, comments }) {
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const handleAddComment = () => {
+    if (!user) {
+      return navigate("/login");
+    }
     dispatch(addComment({ postId: postid, userId: user?.id, text: commentText }))
     .then(() => {
       setCommentText("");
