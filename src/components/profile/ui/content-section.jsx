@@ -52,6 +52,10 @@ export default function ProfileContentSection({ contents }) {
                     src={item.user.avatar || "/assets/default-avatar.png"}
                     alt={item.user.name}
                     className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                      e.target.src = "/assets/default-avatar.png";
+                    }}
                   />
 
                   {/* Nội dung bên phải */}

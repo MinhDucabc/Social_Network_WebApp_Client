@@ -35,9 +35,13 @@ export default function UserHeader({
             {isEditing ? (
               <label>
                 <img
-                  src={form.avatar || "../../../assets/default-avatar.png"}
-                  alt="Avatar"
-                  className="w-20 h-20 rounded-full object-cover cursor-pointer hover:opacity-75"
+                  src={form?.avatar || "/assets/default-avatar.png"}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full"
+                  onError={(e) => {
+                    e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                    e.target.src = "/assets/default-avatar.png";
+                  }}
                 />
                 <input
                   type="file"
@@ -57,9 +61,13 @@ export default function UserHeader({
               </label>
             ) : (
               <img
-                src={form.avatar || "../../../assets/default-avatar.png"}
+                src={form.avatar || "/assets/default-avatar.png"}
                 alt="Avatar"
                 className="w-20 h-20 rounded-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                  e.target.src = "/assets/default-avatar.png";
+                }}
               />
             )}
           </div>
@@ -70,9 +78,7 @@ export default function UserHeader({
               <>
                 <input
                   value={form.name}
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="text-xl font-bold border-b outline-none"
                 />
                 <p className="text-xs text-gray-500 mt-1">

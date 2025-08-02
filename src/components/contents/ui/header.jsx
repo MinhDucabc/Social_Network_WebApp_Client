@@ -40,9 +40,13 @@ export default function Header({
             className="cursor-pointer"
           >
             <img
-              src={user?.avatar || "../../../assets/default-avatar.png"}
+              src={user?.avatar || "/assets/default-avatar.png"}
               alt="avatar"
               className="w-10 h-10 rounded-full"
+              onError={(e) => {
+                e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                e.target.src = "/assets/default-avatar.png";
+              }}
             />
           </div>
           <div

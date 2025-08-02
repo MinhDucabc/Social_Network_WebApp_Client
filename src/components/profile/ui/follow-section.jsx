@@ -46,10 +46,14 @@ export default function FollowSection({ user }) {
                 key={idx}
                 className="flex items-center space-x-3 p-2 bg-gray-50 rounded hover:bg-gray-100"
               >
-                <img
-                  src={userObj.avatar || "../../../assets/default-avatar.png"}
-                  alt="avatar"
-                  className="w-8 h-8 rounded-full object-cover"
+              <img
+                src={userObj?.avatar || "/assets/default-avatar.png"}
+                alt="avatar"
+                className="w-10 h-10 rounded-full"
+                onError={(e) => {
+                  e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                  e.target.src = "/assets/default-avatar.png";
+                }}
                 />
                 <span className="text-sm font-medium">{userObj.name}</span>
               </li>

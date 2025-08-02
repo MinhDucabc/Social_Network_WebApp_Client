@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FollowedUserList from "./ui/followedUserList";
 import SuggestUsers from "./ui/unfollowedUserList";
 import { fetchFollowing } from "../../slices/profile/following-slice";
-import { fetchUnfollowedUsers } from "../../slices/profile/user-suggestion-slice";
+import { fetchUnfollowedUsers, removeUserFromSuggestions, refreshSuggestions } from "../../slices/profile/user-suggestion-slice";
 import { fetchUserProfile } from "../../slices/profile/profile-slice";
 import api from "../../api/apiBase";
 import { resetFollowing } from "../../slices/profile/following-slice";
@@ -36,7 +36,7 @@ export default function UserList({ user }) {
       dispatch(fetchFollowing(user.following));
     }
     if (user.id) {
-      dispatch(fetchUnfollowedUsers(user.id));
+      dispatch(fetchUnfollowedUsers({ userId: user.id, page: 1 }));
     }
 
     // Cleanup function
@@ -55,6 +55,9 @@ export default function UserList({ user }) {
       })
       .then(() => {
         dispatch(fetchUserProfile(user.authId));
+        // Refresh suggestions after follow update
+        dispatch(refreshSuggestions());
+        dispatch(fetchUnfollowedUsers({ userId: user.id, page: 1 }));
       })
       .catch((err) => {
         console.error("Follow update error:", err);
@@ -73,24 +76,35 @@ export default function UserList({ user }) {
   const handleToggleFollow = (targetUserId) => {
     setFollowedUserIds((prev) => {
       const isFollowing = prev.includes(targetUserId);
-      return isFollowing
+      const newFollowedIds = isFollowing
         ? prev.filter((id) => id !== targetUserId)
         : [...prev, targetUserId];
+      
+      // Nếu đang follow (thêm vào danh sách follow) thì xóa khỏi suggestUsers
+      if (!isFollowing) {
+        dispatch(removeUserFromSuggestions(targetUserId));
+      }
+      
+      return newFollowedIds;
     });
     setPendingFollowChange(true);
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto space-y-6">
-      <FollowedUserList
-        users={followingList}
-        onToggleFollow={handleToggleFollow}
-      />
-      <SuggestUsers
-        users={unfollowedList}
-        currentUserId={user?.id}
-        onToggleFollow={handleToggleFollow}
-      />
+    <div className="p-4 max-w-2xl mx-auto space-y-6 bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+        <FollowedUserList
+          users={followingList}
+          onToggleFollow={handleToggleFollow}
+        />
+      </div>
+      <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+        <SuggestUsers
+          users={unfollowedList}
+          currentUserId={user?.id}
+          onToggleFollow={handleToggleFollow}
+        />
+      </div>
     </div>
   );
 }

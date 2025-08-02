@@ -6,7 +6,12 @@ export default function ReplyItem({repliesCount, reply, onToggleReply, hideReply
   return (
     <div className="mb-6 mt-6">
       <div className="flex items-center space-x-2 mb-2">
-        <img src={user.avatar || "../../../assets/default-avatar.png"} alt="avatar" className="w-8 h-8 rounded-full" />
+        <img src={user.avatar || "/assets/default-avatar.png"} alt="avatar" className="w-8 h-8 rounded-full"
+        onError={(e) => {
+          e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+          e.target.src = "/assets/default-avatar.png";
+        }}
+        />
         <div className="bg-gray-100 px-4 py-2 rounded-xl max-w-xl">
           <div className="font-semibold text-sm text-gray-900 mb-1">
             {user.name}
