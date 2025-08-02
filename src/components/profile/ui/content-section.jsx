@@ -34,11 +34,11 @@ export default function ProfileContentSection({ contents }) {
       {/* Content List */}
       <div className="flex-1 pl-0 md:pl-4">
         {loading ? (
-          <p className="text-gray-500 py-4">Đang tải nội dung...</p>
+          <p className="text-gray-500 py-4">Loading contents...</p>
         ) : error ? (
           <p className="text-red-500 py-4">{error}</p>
         ) : filteredList.length === 0 ? (
-          <p className="text-gray-500 py-4">Không có nội dung nào.</p>
+          <p className="text-gray-500 py-4">No contents found.</p>
         ) : (
           <ul className="space-y-4">
             {filteredList.map((item) => (
@@ -65,20 +65,20 @@ export default function ProfileContentSection({ contents }) {
                   >
                     <div className="flex justify-between items-center mb-1">
                       <span className="text-sm text-gray-500 capitalize">
-                        {item.type === "post" ? "Bài viết" : "Câu hỏi"}
+                        {item.type === "post" ? "Post" : "Question"}
                       </span>
                       {item.group && (
                         <span className="text-xs text-gray-400 italic">
-                          Nhóm: {item.group.name}
+                          Group: {item.group.name}
                         </span>
                       )}
                     </div>
 
                     <h3 className="text-base font-semibold text-gray-800 mb-1">
                       {item.type === "post"
-                        ? (item.content || "Không có nội dung").slice(0, 80) +
+                        ? (item.content || "No content").slice(0, 80) +
                           "..."
-                        : (item.title || "Không có tiêu đề").slice(0, 80)}
+                        : (item.title || "No title").slice(0, 80)}
                     </h3>
 
                     {/* Chỉ hiển thị description nếu là question */}

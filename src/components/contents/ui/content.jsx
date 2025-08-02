@@ -83,7 +83,7 @@ export default function content({title, content, image, tags}) {
             onClick={() => setExpanded(true)}
             className="text-blue-500 text-sm hover:underline font-medium"
           >
-            Xem thêm
+            View more
           </button>
         </div>
       )}
@@ -95,7 +95,7 @@ export default function content({title, content, image, tags}) {
             onClick={() => setExpanded(false)}
             className="text-blue-500 text-sm hover:underline font-medium"
           >
-            Thu gọn
+            View less
           </button>
         </div>
       )}

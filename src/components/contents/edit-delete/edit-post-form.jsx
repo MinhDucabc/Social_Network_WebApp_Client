@@ -13,11 +13,35 @@ export default function EditPostForm({ onSubmit, postid, content, onClose }) {
     useEffect(() => {
       dispatch(fetchTags());
     }, []);
-
   
     const handleUpdate = async (e) => {
       e.preventDefault();
-      onSubmit({ id: postid, updateData: {title, content: contentText, tags: tagsSelected }});
+      console.log('Submitting form with data:', { 
+        id: postid, 
+        updateData: { 
+          title, 
+          content: contentText, 
+          tags: tagsSelected 
+        } 
+      });
+      
+      if (typeof onSubmit === 'function') {
+        try {
+          await onSubmit({ 
+            id: postid, 
+            updateData: { 
+              title, 
+              content: contentText, 
+              tags: tagsSelected 
+            } 
+          });
+          console.log('Form submitted successfully');
+        } catch (error) {
+          console.error('Error submitting form:', error);
+        }
+      } else {
+        console.error('onSubmit is not a function');
+      }
       onClose();
     };
   
@@ -96,4 +120,3 @@ export default function EditPostForm({ onSubmit, postid, content, onClose }) {
       </div>
     );
   }
-  

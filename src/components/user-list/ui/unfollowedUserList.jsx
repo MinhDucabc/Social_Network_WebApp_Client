@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUnfollowedUsers, incrementPage } from "../../../slices/profile/user-suggestion-slice";
+import { useNavigate } from "react-router-dom";
 
 export default function SuggestUsers({ currentUserId, onToggleFollow }) {
   const dispatch = useDispatch();
   const { users, loading, error, page, hasMore } = useSelector((state) => state.userSuggestions);
   const observer = useRef();
+  const navigate = useNavigate();
 
   const lastUserRef = useCallback(
     (node) => {
@@ -56,7 +58,7 @@ export default function SuggestUsers({ currentUserId, onToggleFollow }) {
   return (
     <div className="space-y-3 h-[500px] overflow-y-auto pr-2">
       <div className="sticky top-0 bg-gray-50 z-10 pb-2 border-b">
-        <h3 className="text-lg font-bold">Gợi ý theo dõi</h3>
+        <h3 className="text-lg font-bold">Suggested users</h3>
       </div>
       <div className="space-y-3">
         {users.map((user, index) => {
@@ -69,7 +71,7 @@ export default function SuggestUsers({ currentUserId, onToggleFollow }) {
             >
               <div
                 className="flex items-center space-x-3 cursor-pointer mb-2"
-                onClick={() => (window.location.href = `/profile/${user.authId}`)}
+                onClick={() => navigate(`/profile/${user.authId}`)}
               >
                 <img
                   src={user.avatar || '/assets/default-avatar.png'}
@@ -92,7 +94,7 @@ export default function SuggestUsers({ currentUserId, onToggleFollow }) {
                 }}
                 className="w-full px-3 py-2 rounded-md text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors"
               >
-                Theo dõi
+                Follow
               </button>
             </div>
           );
@@ -102,7 +104,7 @@ export default function SuggestUsers({ currentUserId, onToggleFollow }) {
       {/* Loading indicator */}
       {loading && (
         <div className="text-center py-4">
-          <p className="text-gray-500">Đang tải thêm...</p>
+          <p className="text-gray-500">Loading...</p>
         </div>
       )}
       
@@ -116,7 +118,7 @@ export default function SuggestUsers({ currentUserId, onToggleFollow }) {
       {/* No more users message */}
       {!hasMore && users.length > 0 && (
         <div className="text-center py-4">
-          <p className="text-gray-400">Không còn người dùng nào.</p>
+          <p className="text-gray-400">No more users.</p>
         </div>
       )}
       

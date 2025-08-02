@@ -82,7 +82,7 @@ export default function UserHeader({
                   className="text-xl font-bold border-b outline-none"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Nhấn vào ảnh để thay đổi
+                  Click on the image to change
                 </p>
               </>
             ) : (
@@ -90,7 +90,7 @@ export default function UserHeader({
                 <h2 className="text-xl font-bold">{form.name}</h2>
                 {error && <p className="text-red-500">{error}</p>}
                 <p className="text-sm text-gray-600">
-                  Tham gia: {new Date(user.createdAt).toLocaleDateString()}
+                  Joined: {new Date(user.createdAt).toLocaleDateString()}
                 </p>
                 <div className="text-sm mt-1 text-gray-700">
                   <span className="mr-3">Level: {user.level}</span>
@@ -115,12 +115,12 @@ export default function UserHeader({
                 }}
                 className="text-blue-600"
               >
-                Chỉnh sửa
+                Edit
               </button>
             ) : (
               <>
                 <button onClick={onSave} className="text-green-600">
-                  Lưu
+                  Save
                 </button>
                 <button
                   onClick={() => {
@@ -134,7 +134,7 @@ export default function UserHeader({
                   }}
                   className="text-gray-500"
                 >
-                  Hủy
+                  Cancel
                 </button>
               </>
             )}

@@ -35,7 +35,7 @@ export default function CreatePopup({
             }`}
             onClick={() => setActiveTab("question")}
           >
-            Đặt câu hỏi
+            Ask question
           </button>
           <button
             className={`w-1/2 py-2 text-center ${
@@ -45,7 +45,7 @@ export default function CreatePopup({
             }`}
             onClick={() => setActiveTab("post")}
           >
-            Tạo bài đăng
+            Create post
           </button>
         </div>
 

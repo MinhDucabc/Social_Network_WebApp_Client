@@ -1,13 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function FollowedUserList({ users, onToggleFollow }) {
+  const navigate = useNavigate();
   if (!users) return null;
-  if (users.length === 0) return <div>Bạn chưa theo dõi ai.</div>;
+  if (users.length === 0) return <div>You are not following anyone.</div>;
 
   return (
     <div className="space-y-3 h-[250px] overflow-y-auto pr-2">
-      <div className="sticky top-0 bg-gray-50 z-10 pb-2 border-b">
-        <h2 className="text-lg font-semibold">Đang theo dõi</h2>
+      <div className="sticky top-0 bg-gray-50 z-10 pb-2 border-b">  
+        <h2 className="text-lg font-semibold">Following</h2>
       </div>
       <div className="space-y-3">
         {users.map((user) => (
@@ -17,7 +19,7 @@ export default function FollowedUserList({ users, onToggleFollow }) {
           >
             <div
               className="flex items-center space-x-3 cursor-pointer mb-2"
-              onClick={() => (window.location.href = `/profile/${user.authId}`)}
+              onClick={() => navigate(`/profile/${user.authId}`)}
             >
             <img
               src={user?.avatar || "/assets/default-avatar.png"}
@@ -37,7 +39,7 @@ export default function FollowedUserList({ users, onToggleFollow }) {
               onClick={() => onToggleFollow(user.id)}
               className="w-full text-sm px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors font-medium"
             >
-              Bỏ theo dõi
+              Unfollow
             </button>
           </div>
         ))}

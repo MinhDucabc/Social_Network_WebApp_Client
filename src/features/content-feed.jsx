@@ -18,6 +18,7 @@ import {
   addNewContent,
   clearNewContent,
   updateNewContentVotes,
+  updateNewContent
 } from "../slices/contents/add-content-slice";
 
 import { fetchSavedContentUsers, toggleSaveContent } from "../slices/contents/saved-content-users.js";
@@ -176,7 +177,21 @@ export default function ContentFeed() {
   };
 
   const onUpdateSubmit = (updatedContent) => {
-    dispatch(updateContent(updatedContent));
+    const { id, updateData } = updatedContent;
+    
+    // Check if this is a new content (in newContents array)
+    const isNewContent = newContents.some(item => item.id === id);
+    
+    if (isNewContent) {
+      // For new content, update it in the newContents array
+      dispatch({
+        type: 'newContent/updateNewContent',
+        payload: { id, updateData }
+      });
+    } else {
+      // For existing content, use the updateContent action
+      dispatch(updateContent({ id, updateData }));
+    }
   };
 
   const handleDeleteContent = (contentId) => {
@@ -301,20 +316,20 @@ export default function ContentFeed() {
     switch (type) {
       case "question":
         return [
-          { label: "Mới nhất", value: "newest" },
-          { label: "Nhiều vote", value: "highest" },
-          { label: "Nhiều reply", value: "most-reply" },
+          { label: "Newest", value: "newest" },
+          { label: "Most vote", value: "highest" },
+          { label: "Most reply", value: "most-reply" },
         ];
       case "post":
         return [
-          { label: "Mới nhất", value: "newest" },
-          { label: "Nhiều vote", value: "highest" },
-          { label: "Nhiều comment", value: "most-comment" },
+          { label: "Newest", value: "newest" },
+          { label: "Most vote", value: "highest" },
+          { label: "Most comment", value: "most-comment" },
         ];
       default:
         return [
-          { label: "Mới nhất", value: "newest" },
-          { label: "Nhiều vote", value: "highest" },
+          { label: "Newest", value: "newest" },
+          { label: "Most vote", value: "highest" },
         ];
     }
   };
@@ -351,16 +366,16 @@ export default function ContentFeed() {
           onClick={handleReset}
           className="self-end text-sm text-blue-600 hover:underline"
         >
-          Reset bộ lọc
+          Reset filter
         </button>
       )}
 
       {newContentLoading && (
-        <p className="text-center text-gray-500">Đang tải nội dung mới...</p>
+        <p className="text-center text-gray-500">Loading new content...</p>
       )}
       {newContentError && (
         <p className="text-center text-red-500">
-          Lỗi tải nội dung mới: {newContentError}
+          Error loading new content: {newContentError}
         </p>
       )}
       {newContents.map((item) =>
@@ -376,6 +391,9 @@ export default function ContentFeed() {
             comments={comments?.[item.id] ? comments[item.id] : []}
             currentUserId={currentUserId}
             handleToggleSaved={handleToggleSaved}
+            onUpdateSubmit={onUpdateSubmit}
+            onhandleDelete={handleDeleteContent}
+            flag={true}
           />
         ) : (
           <QuestionCard
@@ -389,15 +407,18 @@ export default function ContentFeed() {
             replies={replies?.[item.id] ? replies[item.id] : []}
             currentUserId={currentUserId}
             handleToggleSaved={handleToggleSaved}
+            onUpdateSubmit={onUpdateSubmit}
+            onhandleDelete={handleDeleteContent}
+            flag={true}
           />
         )
       )}
       <hr />
       {loading && (
-        <p className="text-center text-gray-500">Đang tải nội dung...</p>
+        <p className="text-center text-gray-500">Loading contents...</p>
       )}
       {error && (
-        <p className="text-center text-red-500">Lỗi tải nội dung: {error}</p>
+        <p className="text-center text-red-500">Error loading contents: {error}</p>
       )}
       {contents.map((item, index) => { return (
         <div key={item.id}>
@@ -415,6 +436,7 @@ export default function ContentFeed() {
               onUpdateSubmit={onUpdateSubmit}
               onhandleDelete={handleDeleteContent}
               handleToggleSaved={handleToggleSaved}
+              flag={false}
             />
           ) : (
             <QuestionCard
@@ -430,6 +452,7 @@ export default function ContentFeed() {
               onUpdateSubmit={onUpdateSubmit}
               onhandleDelete={handleDeleteContent}
               handleToggleSaved={handleToggleSaved}
+              flag={false}
             />
           )}
 
@@ -451,7 +474,7 @@ export default function ContentFeed() {
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                Thêm nội dung ngẫu nhiên
+                Load more
               </button>
             </div>
           )}
@@ -459,7 +482,7 @@ export default function ContentFeed() {
       )})}
 
       {contents.length === 0 && (
-        <p className="text-center text-gray-500">Không có nội dung nào.</p>
+        <p className="text-center text-gray-500">No contents found.</p>
       )}
     </>
   );

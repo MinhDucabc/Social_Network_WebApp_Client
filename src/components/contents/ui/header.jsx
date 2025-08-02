@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditPostForm from "../edit-delete/edit-post-form";
 import EditQuestionForm from "../edit-delete/edit-question-form";
 import WarningDelete from "../edit-delete/delete-warning-form";
-
+import { useNavigate } from "react-router-dom";
 
 export default function Header({
   id,
@@ -14,16 +14,17 @@ export default function Header({
   currentUserId,
   content,
   type,
-  onhandleSubmit,
-  onhandleDelete
+  onSubmit,
+  onhandleDelete,
+  flag
 }) {
+  debugger
+  const navigate = useNavigate();
   const isFollowing = followedUserIds.includes(user?.id);
   const isCurrentUser = user?.id === currentUserId;
   const [openEditDelete, setOpenEditDelete] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-
-
 
   return (
     <>
@@ -31,10 +32,8 @@ export default function Header({
         <div className="flex flex-row items-center space-x-3">
           <div
             onClick={() => {
-              if (user?.id) {
-                if (user?.authId) {
-                  window.location.href = `/profile/${user.authId}`;
-                }
+              if (user?.id && user?.authId) {
+                navigate(`/profile/${user.authId}`);
               }
             }}
             className="cursor-pointer"
@@ -44,17 +43,15 @@ export default function Header({
               alt="avatar"
               className="w-10 h-10 rounded-full"
               onError={(e) => {
-                e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                e.target.onerror = null; // prevent infinite loop if default image also fails
                 e.target.src = "/assets/default-avatar.png";
               }}
             />
           </div>
           <div
             onClick={() => {
-              if (user?.id) {
-                if (user?.authId) {
-                  window.location.href = `/profile/${user.authId}`;
-                }
+              if (user?.id && user?.authId) {
+                navigate(`/profile/${user.authId}`);
               }
             }}
             className="cursor-pointer"
@@ -68,7 +65,7 @@ export default function Header({
               )}
             </div>
             <p className="text-sm text-gray-500">
-              Ngày đăng: {new Date(date).toLocaleDateString()}
+              Posted on: {new Date(date).toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -80,11 +77,11 @@ export default function Header({
               isFollowing ? "bg-gray-300 text-black" : "bg-blue-500 text-white"
             }`}
           >
-            {isFollowing ? "Hủy theo dõi" : "Theo dõi"}
+            {isFollowing ? "Unfollow" : "Follow"}
           </button>
         )}
 
-        {isCurrentUser && (
+        {isCurrentUser && !flag && (
           <div className="relative">
             <button
               type="button"
@@ -107,7 +104,7 @@ export default function Header({
               </svg>
             </button>
 
-            {openEditDelete && (
+            {openEditDelete && !flag && (
               <div className="absolute right-10 top-0 bg-white rounded-md shadow-lg p-2 z-10">
                 <button
                   type="button"
@@ -117,7 +114,7 @@ export default function Header({
                   }}
                   className="block w-full text-left text-gray-700 hover:bg-gray-100 px-4 py-2"
                 >
-                  Chỉnh sửa
+                  Edit
                 </button>
                 <button
                   type="button"
@@ -127,7 +124,7 @@ export default function Header({
                   }}
                   className="block w-full text-left text-red-500 hover:bg-red-100 px-4 py-2"
                 >
-                  Xóa
+                  Delete
                 </button>
               </div>
             )}
@@ -141,7 +138,7 @@ export default function Header({
             <EditQuestionForm
               questionid={id}
               content={content}
-              onSubmit={onhandleSubmit}
+              onSubmit={onSubmit}
               onClose={() => setShowEditForm(false)}
             />
           )}
@@ -149,7 +146,7 @@ export default function Header({
         type ===
           "post" && (
             <EditPostForm
-              onSubmit={onhandleSubmit}
+              onSubmit={onSubmit}
               postid={id}
               content={content}
               onClose={() => setShowEditForm(false)}

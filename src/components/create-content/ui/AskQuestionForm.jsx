@@ -22,7 +22,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
   const validateQuestion = () => {
     if (title.trim() === "") {
       setErrors({
-        title: "Câu hỏi không được để trống",
+        title: "Question cannot be empty",
         tags: "",
       });
       return false;
@@ -30,7 +30,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
     if (tagsSelected.length === 0) {
       setErrors({
         title: "",
-        tags: "Phải chọn ít nhất một tag",
+        tags: "Please select at least one tag",
       });
       return false;
     }
@@ -65,7 +65,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
     setTagsSelected(tagsSelected.filter((tagId) => tagId !== id));
   };
 
-  const getTagName = (id) => tags.find((t) => t.id === id)?.name || "Không rõ";
+  const getTagName = (id) => tags.find((t) => t.id === id)?.name || "Unknown";
 
   return (
     <div>
@@ -80,7 +80,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
 
       <input
         type="text"
-        placeholder="Câu hỏi"
+        placeholder="What's on your mind?"
         value={title}
         onChange={(e) => {setTitle(e.target.value); setErrors({ title: "" });}}
         className="w-full border border-gray-300 rounded-xl px-4 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -90,11 +90,11 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
         onClick={() => setOpenDescription(!openDescription)}
         className="text-blue-600 hover:text-blue-500"
       >
-        {openDescription ? "Đóng Mô Tả Câu Hỏi" : "Mô Tả Câu Hỏi"}
+        {openDescription ? "Close Question Description" : "Question Description"}
       </button>
       {openDescription && (
         <textarea
-        placeholder="Mô tả câu hỏi"
+        placeholder="Question description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         rows={6}
@@ -104,13 +104,13 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
       
       {/* Tags */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Chọn tag</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Select tag</label>
         <select
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value=""
           onChange={(e) => {handleTagSelect(e); setErrors({ tags: "" });}}
         >
-          <option value="">-- Chọn tag --</option>
+          <option value="">-- Select tag --</option>
           {tags.map((tag) => (
             <option key={tag.id} value={tag.id}>
               {tag.name}
@@ -131,7 +131,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
             <button
               onClick={() => removeTag(id)}
               className="text-blue-600 hover:text-red-500"
-              title="Xóa tag"
+              title="Remove tag"
             >
               ✕
             </button>
@@ -143,7 +143,7 @@ export default function AskQuestionForm({ user, group, onSubmit, onClose }) {
         onClick={handleAsk}
         className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-xl w-full"
       >
-        Gửi câu hỏi
+        Ask question
       </button>
     </div>
   );

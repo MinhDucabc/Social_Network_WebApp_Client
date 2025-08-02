@@ -8,7 +8,6 @@ import Header from "../components/header.jsx";
 export default function HomePage() {
   const [selectedTab, setSelectedTab] = useState("content");
 
-
   const renderMainContent = () => {
     switch (selectedTab) {
       case "content":
@@ -23,15 +22,17 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <div className="flex flex-col h-screen bg-white">
       <Header />
-      <div className="flex h-screen">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar onSelect={setSelectedTab} />
-        <main className="flex-1 p-6 overflow-y-auto bg-white">
-          {renderMainContent()}
-          </main>
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-4xl mx-auto w-full">
+            {renderMainContent()}
+          </div>
+        </main>
         <RightSideBar />
       </div>
-    </>
+    </div>
   );
 }

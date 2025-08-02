@@ -42,6 +42,17 @@ const newContentSlice = createSlice({
       state.filters = { type: "all", searchTerm: "", sortValue: "newest" };
       state.newContents = [];
     },
+    updateNewContent: (state, action) => {
+      const { id, updateData } = action.payload;
+      const index = state.newContents.findIndex(item => item.id === id);
+      if (index !== -1) {
+        state.newContents[index] = {
+          ...state.newContents[index],
+          ...updateData,
+          tags: updateData.tags || state.newContents[index].tags // Preserve existing tags if not provided
+        };
+      }
+    },
     updateNewContentVotes: (state, action) => {
       const {updatedContents} = action.payload;
       updatedContents.forEach((updatedItem) => {
@@ -71,6 +82,6 @@ const newContentSlice = createSlice({
 });
 
 
-export const { clearNewContent, setFilters, clearFilters, updateNewContentVotes } = newContentSlice.actions;
+export const { clearNewContent, setFilters, clearFilters, updateNewContent, updateNewContentVotes } = newContentSlice.actions;
 
 export default newContentSlice.reducer;

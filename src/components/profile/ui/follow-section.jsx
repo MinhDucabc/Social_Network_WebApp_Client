@@ -36,9 +36,9 @@ export default function FollowSection({ user }) {
       {/* List */}
       <div className="flex-1 pl-0 md:pl-4">
         {loading ? (
-          <p className="text-gray-500">Đang tải...</p>
+          <p className="text-gray-500">Loading...</p>
         ) : list.length === 0 ? (
-          <p className="text-gray-500">Không có người nào.</p>
+          <p className="text-gray-500">No users.</p>
         ) : (
           <ul className="space-y-2">
             {list.map((userObj, idx) => (

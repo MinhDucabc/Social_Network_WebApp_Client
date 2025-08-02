@@ -38,20 +38,20 @@ export default function SavedContentSection({ contents, authId }) {
   if (!currentUser || !isAuthorized) {
     return (
       <div className="text-red-500 py-4">
-        Bạn không có quyền xem nội dung đã lưu của người dùng này.
+        You don't have permission to view saved contents of this user.
       </div>
     );
   }
 
   return loading ? (
-    <div className="text-gray-500 py-4">Đang tải nội dung...</div>
+    <div className="text-gray-500 py-4">Loading saved contents...</div>
   ) : error ? (
     <div className="text-red-500 py-4">{error}</div>
   ) : savedContents.length === 0 ? (
-    <div className="text-gray-500 py-4">Bạn chưa lưu nội dung nào.</div>
+    <div className="text-gray-500 py-4">You haven't saved any contents.</div>
   ) : (
     <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4">Nội dung đã lưu</h2>
+      <h2 className="text-xl font-semibold mb-4">Saved contents</h2>
       <ul className="space-y-4">
         {savedContents.map((item) => (
           <li
@@ -63,16 +63,20 @@ export default function SavedContentSection({ contents, authId }) {
                 src={item.user.avatar || "/assets/default-avatar.png"}
                 alt={item.user.name}
                 className="w-10 h-10 rounded-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null; // tránh lặp vô hạn nếu ảnh mặc định cũng lỗi
+                  e.target.src = "/assets/default-avatar.png";
+                }}
               />
               <div className="flex-1">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">
-                    {item.type === "post" ? "Bài viết" : "Câu hỏi"}
+                    {item.type === "post" ? "Post" : "Question"}
                   </span>
                 </div>
                 <h3 className="text-md font-medium mt-1">
                   {item.type === "post"
-                    ? (item.content || "Không có nội dung").slice(0, 80) + "..."
+                    ? (item.content || "No content").slice(0, 80) + "..."
                     : item.title.slice(0, 80)}
                 </h3>
                 {item.content && item.type === "post" && (
@@ -86,7 +90,7 @@ export default function SavedContentSection({ contents, authId }) {
                   </p>
                 )}
                 <div className="text-sm text-gray-400 mt-2">
-                  Đăng bởi: {item.user.name}
+                  Posted by: {item.user.name}
                 </div>
               </div>
             </div>

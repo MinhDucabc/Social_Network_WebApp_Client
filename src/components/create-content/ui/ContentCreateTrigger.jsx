@@ -13,7 +13,7 @@ export default function ContentCreateTrigger({ group, user, onOpen }) {
       />
       <input
         type="text"
-        placeholder="Bạn muốn hỏi hay đăng gì?"
+        placeholder="What's on your mind?"
         className="bg-gray-100 rounded-xl px-4 py-2 w-full text-gray-500 cursor-pointer"
       />
     </div>

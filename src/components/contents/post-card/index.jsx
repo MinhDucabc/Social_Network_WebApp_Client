@@ -4,7 +4,7 @@ import Content from '../ui/content.jsx'
 import InteractionField from '../ui/interaction-field.jsx'
 import CommentSection from '../ui/comment-section.jsx'
 
-export default function PostCard({postContent, handleToggleFollow, handleToggleVotes, voteChanges, usersByContentId, followedUserIds, currentUserId, comments, onUpdateSubmit, onhandleDelete, handleToggleSaved}) {
+export default function PostCard({postContent, handleToggleFollow, handleToggleVotes, voteChanges, usersByContentId, followedUserIds, currentUserId, comments, onUpdateSubmit, onhandleDelete, handleToggleSaved, flag}) {
   const [toggleCommentSection, setToggleCommentSection] = useState(false)
   const { id, type, title, content, image, tags, date, user, group } = postContent;
   const postInputField = {title, content, image, tags}
@@ -12,9 +12,20 @@ export default function PostCard({postContent, handleToggleFollow, handleToggleV
     <>
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-4 mt-6">
         {/* Header */}
-        <Header user={user} date={date} group={group} handleToggleFollow={handleToggleFollow} 
-        followedUserIds={followedUserIds} currentUserId={currentUserId} id={id} content={postInputField}
-         type={type} onhandleSubmit = {onUpdateSubmit} onhandleDelete={onhandleDelete}/>
+        <Header 
+          user={user} 
+          date={date} 
+          group={group} 
+          handleToggleFollow={handleToggleFollow} 
+          followedUserIds={followedUserIds} 
+          currentUserId={currentUserId} 
+          id={id} 
+          content={postInputField}
+          type={type} 
+          onSubmit={onUpdateSubmit} 
+          onhandleDelete={onhandleDelete}
+          flag={flag}
+        />
         {/* Content*/}
         <Content {...postInputField}/>
         {/* Upvote/Downvote & Comment*/}
@@ -36,4 +47,3 @@ export default function PostCard({postContent, handleToggleFollow, handleToggleV
     </>
   )
 }
-

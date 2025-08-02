@@ -64,8 +64,8 @@ export default function Profile({ authId }) {
     }
   };
 
-  if (loading) return <div>Đang tải profile...</div>;
-  if (error) return <div>Lỗi: {error}</div>;
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div>Error: {error}</div>;
   if (!user) return null;
 
   return (
@@ -80,10 +80,10 @@ export default function Profile({ authId }) {
         updatedError={updatedError}
       />
       <div className="flex space-x-4 border-b pb-2 text-sm">
-        <TabButton label="Giới thiệu" activeTab={activeTab} tabKey="intro" setActiveTab={setActiveTab} />
+        <TabButton label="Intro" activeTab={activeTab} tabKey="intro" setActiveTab={setActiveTab} />
         <TabButton label="Follower" activeTab={activeTab} tabKey="follow" setActiveTab={setActiveTab} />
-        <TabButton label="Nội dung" activeTab={activeTab} tabKey="content" setActiveTab={setActiveTab} />
-        <TabButton label="Lưu" activeTab={activeTab} tabKey="saved" setActiveTab={setActiveTab} />
+        <TabButton label="Content" activeTab={activeTab} tabKey="content" setActiveTab={setActiveTab} />
+        <TabButton label="Saved" activeTab={activeTab} tabKey="saved" setActiveTab={setActiveTab} />
       </div>
 
       {activeTab === "intro" && (
